@@ -1,3 +1,5 @@
+import json
+
 import pygame
 from network import Network
 from player import Player
@@ -11,7 +13,7 @@ pygame.display.set_caption("Client")
 
 obstacle = [Obstacles(0,100,150,30,(0,0,0)),Obstacles(200,150,30,150,(0,0,0)),Obstacles(300, 300,30,100,(0,0,0)),Obstacles(300,100,200,30,(0,0,0))]
 
-def redrawWindow(win,player, player2, obstacle):
+def redrawWindow(win, player, player2, obstacle):
     win.fill((255,255,255))
     for obs in obstacle:
         obs.draw(win)
@@ -23,12 +25,14 @@ def redrawWindow(win,player, player2, obstacle):
 def main():
     run = True
     n = Network()
-    p = n.getP()
+    p = Player(**json.loads(n.getP())) #it does is expanding the dictionary
     clock = pygame.time.Clock()
 
     while run:
         clock.tick(60)
-        p2 = n.send(p)
+        p2net = n.send(json.dumps(p.__dict__))
+        p2json = json.loads(p2net)
+        p2 = Player(**p2json)
 
         #Game loop
         for event in pygame.event.get():

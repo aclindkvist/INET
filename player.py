@@ -1,14 +1,22 @@
 import pygame
 
 class Player():
-    def __init__(self, x, y, width, height, color):
+
+    # Constructor for recreating encoded player
+    def __init__(self, x, y, width, height, color, rect=None, vel=None):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.color = color
-        self.rect = (x,y,width,height)
-        self.vel = 3
+        if rect is not None:
+            self.rect = rect
+        else:
+            self.rect = (x, y, width, height)
+        if vel is not None:
+            self.vel = vel
+        else:
+            self.vel = 3
 
     def draw(self, win):
         pygame.draw.rect(win, self.color, self.rect)

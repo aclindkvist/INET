@@ -1,3 +1,4 @@
+import json
 import socket
 from _thread import *
 from player import Player
@@ -14,8 +15,6 @@ try:
 except socket.error as e:
     print(str(e))
 
-
-print(s)
 s.listen(2)
 print("Waiting for a connection, Server Started")
 
@@ -24,11 +23,12 @@ players = [Player(0,0,30,30,(255,0,0)), Player(470,470, 30,30, (0,0,255))]
 
 
 def threaded_client(conn, player):
-    conn.send(str.encode(players[player]))
+    #dict = key, value. gör om complex object till ett dictionary som kan json encodas.
+    conn.send(str.encode(json.dumps(players[player].__dict__)))
     reply = ""
     while True:
         try:
-            data = conn.recv(2048).decode()
+            data = Player(**json.loads(conn.recv(2048).decode()))
             players[player] = data
 
             if not data:
@@ -43,7 +43,7 @@ def threaded_client(conn, player):
                 print("Received: ", data)
                 print("Sending : ", reply)
 
-            conn.sendall(str.encode(reply))
+            conn.sendall(str.encode(json.dumps(reply.__dict__)))
         except:
             break
 
