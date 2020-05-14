@@ -3,7 +3,6 @@ import socket
 from _thread import *
 from player import Player
 import sys
-from obstacles import Obstacles
 
 server = "192.168.10.123"
 port = 5555
@@ -19,11 +18,11 @@ s.listen(2)
 print("Waiting for a connection, Server Started")
 
 
-players = [Player(0,0,30,30,(255,0,0)), Player(470,470, 30,30, (0,0,255))]
+players = [Player(30,30,30,30,(255,0,0)), Player(450,30, 30,30, (0,0,255))]
 
 
 def threaded_client(conn, player):
-    #dict = key, value. gör om complex object till ett dictionary som kan json encodas.
+    #dict = (key, value). gör om complex object till ett dictionary som kan json encodas.
     conn.send(str.encode(json.dumps(players[player].__dict__)))
     reply = ""
     while True:
