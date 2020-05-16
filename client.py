@@ -10,13 +10,16 @@ height = 510
 win = pygame.display.set_mode((width, height))
 # Title on the game
 pygame.display.set_caption("Client")
+score = 0
 
-obstacles = [Obstacle(0,0,510,30,(0,0,0)),
-             Obstacle(0,480,510,30,(0,0,0)),
-             Obstacle(0,0,30,510,(0,0,0)),
-             Obstacle(480,0,30,510,(0,0,0)),
-             Obstacle(225,205,30,100,(0,0,0)),
-             ]
+obstacles = [Obstacle(0, 0, 510, 30, (0, 0, 0)),
+             Obstacle(0, 480, 510, 30, (0, 0, 0)),
+             Obstacle(0, 0, 30, 510, (0, 0, 0)),
+             Obstacle(480, 0, 30, 510, (0, 0, 0)),
+             Obstacle(225, 205, 20, 100, (0, 0, 0)),
+             Obstacle(70, 70, 150, 20, (0, 0, 0)),
+             Obstacle(300, 150, 20, 200, (0, 0, 0)),
+             Obstacle(90, 350, 300, 20, (0, 0, 0))]
 
 def redrawWindow(win, player, player2, obstacles):
     win.fill((255,255,255))
@@ -24,7 +27,17 @@ def redrawWindow(win, player, player2, obstacles):
         obs.draw(win)
     player.draw(win)
     player2.draw(win)
+
     pygame.display.update()
+
+def krock(p):
+    for i in obstacles:
+        # stående hinder
+        if (p.x + 30 > i.x and p.x < i.x + i.width) and (p.y + 30 > i.y and p.y < i.y + i.height):
+            p.babyPlzDontGo()
+        else:
+            p.update()
+
 
 def main():
     run = True
@@ -44,12 +57,11 @@ def main():
                 run = False
                 pygame.quit()
         p.move()
-        #om spelare krockar med hinder i mitten
-        if (p.x+30 > obstacles[4].x and p.x < obstacles[4].x + 30) and (p.y+30 > obstacles[4].y and p.y < obstacles[4].y + 100):
-            p.plzstopgo()
+        #om spelare krockar med hinder
+        krock(p)
         #om spelarna krockar med varandra ska de stanna
         if (p.x+30 > p2.x and p.x < p2.x+30) and (p.y+30 > p2.y and p.y < p2.y+30):
-            p.plzstopgo()
+            p.babyPlzDontGo()
         else:
             p.update()
         redrawWindow(win, p, p2, obstacles)

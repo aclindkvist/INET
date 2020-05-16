@@ -37,15 +37,11 @@ class Player():
             self.y += self.vel
 
         if keys[pygame.K_SPACE]:
-            pass
+            self.pickUp()
 
         #self.update()
 
-
-    def update(self):
-        self.rect = (self.x, self.y, self.width, self.height)
-
-    def plzstopgo(self):
+    def babyPlzDontGo(self):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT]:
@@ -62,3 +58,10 @@ class Player():
 
         if keys[pygame.K_SPACE]:
             pass
+
+    def pickUp(self):
+        print("picked")
+
+
+    def update(self):
+        self.rect = (self.x, self.y, self.width, self.height)

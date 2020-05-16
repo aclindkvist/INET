@@ -2,6 +2,7 @@ import json
 import socket
 from _thread import *
 from player import Player
+from obstacles import Eatable
 import sys
 
 server = "192.168.10.123"
@@ -19,6 +20,8 @@ print("Waiting for a connection, Server Started")
 
 
 players = [Player(30,30,30,30,(255,0,0)), Player(450,30, 30,30, (0,0,255))]
+
+
 
 
 def threaded_client(conn, player):
