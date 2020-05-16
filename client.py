@@ -27,7 +27,6 @@ def redrawWindow(win, player, player2, obstacles):
         obs.draw(win)
     player.draw(win)
     player2.draw(win)
-
     pygame.display.update()
 
 def krock(p):

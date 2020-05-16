@@ -19,7 +19,7 @@ class Eatable():
         self.width = width
         self.height = height
         self.color = color
-        self.rect = (x,y,width,height)
+        self.rect = (x, y, width, height)
 
     def draw(self, win):
         pygame.draw.rect(win, self.color, self.rect)

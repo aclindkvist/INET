@@ -20,18 +20,19 @@ print("Waiting for a connection, Server Started")
 
 
 players = [Player(30,30,30,30,(255,0,0)), Player(450,30, 30,30, (0,0,255))]
+eatables = [Eatable(30,400,10,10,(0,255,0))]
 
-
-
-
-def threaded_client(conn, player):
+def threaded_client(conn, player, eatable):
     #dict = (key, value). gör om complex object till ett dictionary som kan json encodas.
     conn.send(str.encode(json.dumps(players[player].__dict__)))
+    conn.send(str.encode(json.dumps(eatables[eatable].__dict__)))
     reply = ""
     while True:
         try:
             data = Player(**json.loads(conn.recv(2048).decode()))
             players[player] = data
+            dataE = Eatable(**json.loads(conn.recv(2048).decode()))
+            eatables[eatable] = dataE
 
             if not data:
                 print("Disconnected")
