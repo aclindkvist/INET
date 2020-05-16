@@ -3,7 +3,7 @@ import pygame
 import player
 from network import Network
 from player import Player
-from obstacles import Obstacle
+from obstacles import Obstacle, Eatable
 
 width = 510
 height = 510
@@ -21,12 +21,16 @@ obstacles = [Obstacle(0, 0, 510, 30, (0, 0, 0)),
              Obstacle(300, 150, 20, 200, (0, 0, 0)),
              Obstacle(90, 350, 300, 20, (0, 0, 0))]
 
-def redrawWindow(win, player, player2, obstacles):
+def redrawWindow(win, player, player2, eatable, eatable2, obstacles):
     win.fill((255,255,255))
     for obs in obstacles:
         obs.draw(win)
     player.draw(win)
     player2.draw(win)
+    if eatable.eaten == False:
+        eatable.draw(win)
+    if eatable2.eaten == False:
+        eatable2.draw(win)
     pygame.display.update()
 
 def krock(p):
@@ -41,14 +45,25 @@ def krock(p):
 def main():
     run = True
     n = Network()
-    p = Player(**json.loads(n.getP())) #expanding the dictionary
+    things = json.loads(n.getServerObjectList())
+    p = Player(**things[0])# expanding the dictionary
+    e1 = Eatable(**things[1])
+    e2 = Eatable(**things[2])
+
+    clientObjectList = [p,e1,e2]
+
     clock = pygame.time.Clock()
 
     while run:
         clock.tick(100)
-        p2net = n.send(json.dumps(p.__dict__))
-        p2json = json.loads(p2net)
-        p2 = Player(**p2json)
+
+        clientObjectList = [p,e1,e2]
+
+        other_things_net = n.send(json.dumps(list(map(lambda item: item.__dict__, clientObjectList))))
+        other_things_json = json.loads(other_things_net)
+        p2 = Player(**other_things_json[0])
+        e1 = Eatable(**other_things_json[1])
+        e2 = Eatable(**other_things_json[2])
 
         #Game loop
         for event in pygame.event.get():
@@ -63,6 +78,13 @@ def main():
             p.babyPlzDontGo()
         else:
             p.update()
-        redrawWindow(win, p, p2, obstacles)
+        #plockar upp eatable
+        if (p.x < e1.x < p.x+30) and (p.y < e1.y < p.y+30):
+            e1.getEaten()
+
+        elif (p.x < e2.x < p.x+30) and (p.y < e2.y < p.y+30):
+            e2.getEaten()
+
+        redrawWindow(win, p, p2, e1, e2, obstacles)
 
 main()

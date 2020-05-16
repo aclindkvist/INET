@@ -6,16 +6,17 @@ class Network:
         self.server = "192.168.10.123" #IPv4
         self.port = 5555
         self.addr = (self.server, self.port)
-        self.p = self.connect()
+        self.serverObjectList = self.connect()
 
-    def getP(self):
-        return self.p
+    def getServerObjectList(self):
+        return self.serverObjectList
 
     def connect(self):
         try:
             self.client.connect(self.addr)
             recv = self.client.recv(2048)
             decoded = recv.decode()
+
             return decoded
         except:
             pass
