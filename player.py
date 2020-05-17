@@ -1,9 +1,8 @@
 import pygame
 
-class Player():
-
+class Player:
     # Constructor for recreating encoded player
-    def __init__(self, x, y, width, height, color, rect=None, vel=None):
+    def __init__(self, x, y, width, height, color, rect=None, vel=None, hungry=True, won=False):
         self.x = x
         self.y = y
         self.width = width
@@ -17,6 +16,8 @@ class Player():
             self.vel = vel
         else:
             self.vel = 1
+        self.hungry = hungry
+        self.won = won
 
     def draw(self, win):
         pygame.draw.rect(win, self.color, self.rect)
@@ -61,6 +62,9 @@ class Player():
 
     def pickUp(self):
         print("picked")
+
+    def notHungry(self):
+        self.hungry = False
 
 
     def update(self):

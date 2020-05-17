@@ -1,9 +1,9 @@
 import json
 import pygame
-import player
+pygame.font.init()
 from network import Network
 from player import Player
-from obstacles import Obstacle, Eatable
+from obstacles import Obstacle, Eatable, VictoryWindow
 
 width = 510
 height = 510
@@ -21,16 +21,18 @@ obstacles = [Obstacle(0, 0, 510, 30, (0, 0, 0)),
              Obstacle(300, 150, 20, 200, (0, 0, 0)),
              Obstacle(90, 350, 300, 20, (0, 0, 0))]
 
-def redrawWindow(win, player, player2, eatable, eatable2, obstacles):
+def redrawWindow(win, player, player2, eatable, eatable2, obstacles, victory):
     win.fill((255,255,255))
     for obs in obstacles:
         obs.draw(win)
     player.draw(win)
     player2.draw(win)
-    if eatable.eaten == False:
+    if not eatable.eaten:
         eatable.draw(win)
-    if eatable2.eaten == False:
+    if not eatable2.eaten:
         eatable2.draw(win)
+    if player2.won == True:
+        victory.draw(win)
     pygame.display.update()
 
 def krock(p):
@@ -50,7 +52,7 @@ def main():
     e1 = Eatable(**things[1])
     e2 = Eatable(**things[2])
 
-    clientObjectList = [p,e1,e2]
+    clientObjectList = [p, e1, e2]
 
     clock = pygame.time.Clock()
 
@@ -70,6 +72,7 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
+
         p.move()
         #om spelare krockar med hinder
         krock(p)
@@ -79,12 +82,16 @@ def main():
         else:
             p.update()
         #plockar upp eatable
-        if (p.x < e1.x < p.x+30) and (p.y < e1.y < p.y+30):
+        if (p.x < e1.x < p.x+30) and (p.y < e1.y < p.y+30) and p.hungry == True:
             e1.getEaten()
+            p.notHungry()
 
-        elif (p.x < e2.x < p.x+30) and (p.y < e2.y < p.y+30):
+        elif (p.x < e2.x < p.x+30) and (p.y < e2.y < p.y+30) and p.hungry == True:
             e2.getEaten()
+            p.notHungry()
 
-        redrawWindow(win, p, p2, e1, e2, obstacles)
+        victory = VictoryWindow("You won!!", 130, 130, 250, 150, (0,150,0))
+
+        redrawWindow(win, p, p2, e1, e2, obstacles, victory)
 
 main()
